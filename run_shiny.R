@@ -7,7 +7,7 @@
 # install.packages("dplyr")
 
 library(shiny)
-source("elo.R")
+source("functions/elo.R")
 
 data = read.csv("durak.csv")
 
