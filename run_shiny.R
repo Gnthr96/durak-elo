@@ -15,7 +15,7 @@ temp = calculate_history(data)
 present_table = temp$present_table
 history = temp$history
 
-source("server.R")
-source("ui.R")
+source("functions/server.R")
+source("functions/ui.R")
 
 shinyApp(ui = ui, server = server)

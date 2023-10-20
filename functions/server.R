@@ -43,13 +43,13 @@ server <- function(input, output) {
   
   #"Add Result" button
   observeEvent(input$add, {
-    data = rbind(data, NA)  #create new row = new match
+    data = rbind(data, NA)                                      #create new row = new match
     data[nrow(data),input$player_choice] = as.numeric(input$player_choice == input$loser_choice)
-    write.csv(data, "durak.csv", row.names = FALSE, na='')  #overwrite existing file
-    temp = calculate_history(data)                          #recalculate the history
+    write.csv(data, "../durak.csv", row.names = FALSE, na='')   #overwrite existing file
+    temp = calculate_history(data)                              #recalculate the history
     present_table = temp$present_table
     history = temp$history
-    showNotification("Result saved", duration = 3)          #give a little notification
+    showNotification("Result saved", duration = 3)              #give a little notification
   })
   
   # plot depending on the input of player_choice
