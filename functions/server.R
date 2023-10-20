@@ -1,6 +1,8 @@
 library(ggplot2)
 library(DT)
 library(dplyr)
+library(shinyscreenshot)
+library(reshape2)
 
 losing_probs_plot = function(players){
   probs = get_losing_probs(players, as.matrix(history[nrow(history),]))
@@ -43,13 +45,13 @@ server <- function(input, output) {
   
   #"Add Result" button
   observeEvent(input$add, {
-    data = rbind(data, NA)                                      #create new row = new match
+    data = rbind(data, NA)                                  #create new row = new match
     data[nrow(data),input$player_choice] = as.numeric(input$player_choice == input$loser_choice)
-    write.csv(data, "../durak.csv", row.names = FALSE, na='')   #overwrite existing file
-    temp = calculate_history(data)                              #recalculate the history
+    write.csv(data, "durak.csv", row.names = FALSE, na='')  #overwrite existing file
+    temp = calculate_history(data)                          #recalculate the history
     present_table = temp$present_table
     history = temp$history
-    showNotification("Result saved", duration = 3)              #give a little notification
+    showNotification("Result saved", duration = 3)          #give a little notification
   })
   
   # plot depending on the input of player_choice
@@ -68,6 +70,11 @@ server <- function(input, output) {
                                                                                     "Total Number of Losses", "Loss Ratio"))%>%
       formatPercentage(7, 2) %>%
       formatRound(1, digits = 2)
+  })
+  
+  # download button for saving the table to an image
+  observeEvent(input$screenshot, {
+    screenshot(filename = "results")
   })
   
   # losing_probabilities

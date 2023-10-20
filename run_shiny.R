@@ -1,10 +1,11 @@
 # install.packages("shiny")
 # install.packages("shinythemes")
 # install.packages("mvtnorm")
-# install.packages("reshpae2")
+# install.packages("reshape2")
 # install.packages("DT")
 # install.packages("ggplot2")
 # install.packages("dplyr")
+# install.packages("shinyscreenshot") #necessary only for screenshot button
 
 library(shiny)
 source("functions/elo.R")

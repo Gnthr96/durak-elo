@@ -1,5 +1,4 @@
 library(mvtnorm)
-library(reshape2)
 
 ###
 ###global parameters:
