@@ -1,7 +1,8 @@
 # Durak - Elo computation
 ## What is the idea behind the Elo calculation?
 The idea, applied to chess is taken from here: https://gwern.net/doc/statistics/order/comparison/1978-elo-theratingofchessplayerspastandpresent.pdf
-This is also helpful, although maybe a bit overkill: https://www.microsoft.com/en-us/research/wp-content/uploads/2007/01/NIPS2006_0688.pdf
+
+This is also interesting, although maybe a bit overkill: https://www.microsoft.com/en-us/research/wp-content/uploads/2007/01/NIPS2006_0688.pdf
 
 
 We decode the result of a match by assigning 1 to the loser and 0 to the winner(s)/non-loser(s). After every match, we update every player's score according to the formula
