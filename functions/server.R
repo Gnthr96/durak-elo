@@ -6,7 +6,7 @@ library(reshape2)
 
 losing_probs_plot = function(players){
   probs = get_losing_probs(players, as.matrix(values$history[nrow(values$history),]))
-  return(values$data.frame(player = players, probs = probs))
+  return(data.frame(player = players, probs = probs))
 }
 
 ## server function
@@ -68,7 +68,7 @@ server <- function(input, output) {
   # results in values$datatable
   output$table <- renderDT({
     values$present_table[rownames(values$present_table)%in%input$player_choice,]%>%
-        values$datatable(style = "bootstrap", options = list(pageLength = 20), colnames= c("Score", "Longest Losing Streak", "Longest Winning Streak",
+        datatable(style = "bootstrap", options = list(pageLength = 20), colnames= c("Score", "Longest Losing Streak", "Longest Winning Streak",
                                                                                     "Current Winning Streak", "Total Number of Games", 
                                                                                     "Total Number of Losses", "Loss Ratio"))%>%
       formatPercentage(7, 2) %>%
