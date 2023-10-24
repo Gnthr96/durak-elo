@@ -4,15 +4,17 @@ library(dplyr)
 library(shinyscreenshot)
 library(reshape2)
 
-losing_probs_plot = function(players){
-  probs = get_losing_probs(players, as.matrix(values$history[nrow(values$history),]))
-  return(data.frame(player = players, probs = probs))
-}
+
 
 ## server function
 server <- function(input, output) {
   #variables need to be reactive to be changeable
   values = reactiveValues(data = data, history = history, present_table = present_table)
+  
+  losing_probs_plot = function(players){
+    probs = get_losing_probs(players, as.matrix(values$history[nrow(values$history),]))
+    return(data.frame(player = players, probs = probs))
+  }
   
   #multiselect the players that should be shown
   observe({
