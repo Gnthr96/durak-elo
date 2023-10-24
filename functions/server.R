@@ -5,27 +5,30 @@ library(shinyscreenshot)
 library(reshape2)
 
 losing_probs_plot = function(players){
-  probs = get_losing_probs(players, as.matrix(history[nrow(history),]))
-  return(data.frame(player = players, probs = probs))
+  probs = get_losing_probs(players, as.matrix(values$history[nrow(values$history),]))
+  return(values$data.frame(player = players, probs = probs))
 }
 
 ## server function
 server <- function(input, output) {
+  #variables need to be reactive to be changeable
+  values = reactiveValues(data = data, history = history, present_table = present_table)
+  
   #multiselect the players that should be shown
   observe({
     if(input$selectall == 0) return(output$ui_player_choice <- renderUI(
       checkboxGroupInput("player_choice", 
                          label="Player:",
-                         colnames(data),
-                         selected=colnames(data))
+                         colnames(values$data),
+                         selected=colnames(values$data))
     )) 
     else if (input$selectall%%2 == 0)
     {
       output$ui_player_choice <- renderUI(
         checkboxGroupInput("player_choice", 
                            label="Player:",
-                           colnames(data),
-                           selected=colnames(data))
+                           colnames(values$data),
+                           selected=colnames(values$data))
       )
     }
     else
@@ -33,7 +36,7 @@ server <- function(input, output) {
       output$ui_player_choice <- renderUI(
         checkboxGroupInput("player_choice", 
                            label="Player:",
-                           colnames(data))
+                           colnames(values$data))
       )
     }
   })
@@ -45,27 +48,27 @@ server <- function(input, output) {
   
   #"Add Result" button
   observeEvent(input$add, {
-    data = rbind(data, NA)                                  #create new row = new match
-    data[nrow(data),input$player_choice] = as.numeric(input$player_choice == input$loser_choice)
-    write.csv(data, "durak.csv", row.names = FALSE, na='')  #overwrite existing file
-    temp = calculate_history(data)                          #recalculate the history
-    present_table = temp$present_table
-    history = temp$history
+    values$data = rbind(values$data, NA)                                  #create new row = new match
+    values$data[nrow(values$data),input$player_choice] = as.numeric(input$player_choice == input$loser_choice)
+    write.csv(values$data, "durak.csv", row.names = FALSE, na='')  #overwrite existing file
+    temp = calculate_history(values$data)                          #recalculate the values$history
+    values$present_table = temp$present_table
+    values$history = temp$history
     showNotification("Result saved", duration = 3)          #give a little notification
   })
   
   # plot depending on the input of player_choice
   output$chart <- renderPlot({
-    melt(history ,  id.vars = 'match_id', variable.name = 'name') %>% 
+    melt(values$history ,  id.vars = 'match_id', variable.name = 'name') %>% 
       filter(name %in% input$player_choice)%>%
       ggplot(aes(x = match_id, y = value, color = name)) +
       geom_line()
   })
   
-  # results in datatable
+  # results in values$datatable
   output$table <- renderDT({
-    present_table[rownames(present_table)%in%input$player_choice,]%>%
-        datatable(style = "bootstrap", options = list(pageLength = 20), colnames= c("Score", "Longest Losing Streak", "Longest Winning Streak",
+    values$present_table[rownames(values$present_table)%in%input$player_choice,]%>%
+        values$datatable(style = "bootstrap", options = list(pageLength = 20), colnames= c("Score", "Longest Losing Streak", "Longest Winning Streak",
                                                                                     "Current Winning Streak", "Total Number of Games", 
                                                                                     "Total Number of Losses", "Loss Ratio"))%>%
       formatPercentage(7, 2) %>%
