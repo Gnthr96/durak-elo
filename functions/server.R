@@ -56,7 +56,13 @@ server <- function(input, output) {
     temp = calculate_history(values$data)                          #recalculate the values$history
     values$present_table = temp$present_table
     values$history = temp$history
-    showNotification("Result saved", duration = 3)          #give a little notification
+    output$ui_player_choice <- renderUI(
+      checkboxGroupInput("player_choice", 
+                         label="Player:",
+                         colnames(values$data),
+                         selected=colnames(values$data)[!is.na(values$data[nrow(values$data),])])
+    )
+    showNotification("Result saved", duration = 1)          #give a little notification
   })
   
   # plot depending on the input of player_choice
