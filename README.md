@@ -17,6 +17,10 @@ This project is based on the Elo rating system as applied to chess. For further 
 ## Elo Calculation
 This is a brief summary of the formula we are using for the Elo computation.
 
+### Laters Results
+
+![Results](results.png)
+
 ### Update Rule
 The result of a match is decoded by assigning `1` to the loser and `0` to the winner(s)/non-loser(s). After every match, every player's score updates according to this formula:
 ```
