@@ -29,9 +29,13 @@ new_score = old_score + K*(expected_result - result)
 where we fix `K = 32`. The `expected_result` is equal to the losing probability, i.e., some value between 0 and 1.
 
 ### Probability Calculation
-`X_i - X_j < 0` event is normally distributed with mean `m_i = mu_i - mu_j` and variance `2*sigma^2`. Here `X_i` and `X_j` describe players' performance which are independent normal distributions around their Elo-scores `mu_i` and `mu_j` with standard deviation fixed at `sigma = 200`. The losing probability is calculated using the cumulative distribution function (cdf) `F` of a n-dimensional multivariate normal distribution.
+To compute the expected result, we assume that player `i`'s performance is described by a normal distribution `X_i` around his Elo-score `mu_i`, independent of all other players. The standard deviation is fixed at `sigma = 200`. 
 
-The necessary matrix (`S`) for this calculation has diagonal entries `2*sigma^2` and all other entries `sigma^2`.
+The probability for player `i` to lose in a match against `n` opponents is now determined by the probability that his performance is lower than that of all other players, i.e. `X_i < X_j` for all participating players `j = 1, ..., n`. We can also express that event as `X_i - X_j < 0` for all `j= 1, ..., n`. 
+We know that `X_i - X_j` is normally distributed with mean `m_i = mu_i - mu_j` and variance `2*sigma^2`. Furthermore, `Cov(X_i - X_j, X_i - X_k) = sigma^2` for all `j /= k`. 
+
+Thus, we can calculate the losing probability as `F(0,0,...,0)`, where `F` is the cdf of an n-dimensional multivariate normal distribution with mean `m` and covariance matrix `S`. `S` is a matrix with diagonal entries `2*sigma^2` and all other entries `sigma^2`.
+
 
 ## References
 - [The Rating of Chess players](https://gwern.net/doc/statistics/order/comparison/1978-elo-theratingofchessplayerspastandpresent.pdf)
