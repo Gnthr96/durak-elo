@@ -56,6 +56,7 @@ server <- function(input, output) {
     temp = calculate_history(values$data)                          #recalculate the values$history
     values$present_table = temp$present_table
     values$history = temp$history
+    write.csv(values$history[,-ncol(values$history)], "elo_history.csv", row.names = FALSE)
     output$ui_player_choice <- renderUI(
       checkboxGroupInput("player_choice", 
                          label="Player:",
