@@ -9,10 +9,10 @@ library(reshape2)
 ## server function
 server <- function(input, output) {
   #variables need to be reactive to be changeable
-  values = reactiveValues(data = data, history = history, present_table = present_table)
+  values = reactiveValues(data = data, history = history, present_table = present_table, sigma = sigma, K = K)
   
-  losing_probs_plot = function(players){
-    probs = get_losing_probs(players, as.matrix(values$history[nrow(values$history),]))
+  losing_probs_plot = function(players, sigma){
+    probs = get_losing_probs(players, as.matrix(values$history[nrow(values$history),]), sigma)
     return(data.frame(player = players, probs = probs))
   }
   
@@ -43,6 +43,26 @@ server <- function(input, output) {
     }
   })
   
+  #"Regular Players" button
+  observeEvent(input$select_regular, {
+    output$ui_player_choice <- renderUI(
+      checkboxGroupInput("player_choice",
+                         label="Player:",
+                         colnames(values$data),
+                         selected=colnames(values$data)[colSums(!is.na(data)) >= 30]))
+  })
+  
+  #"Recalculate" button
+  observeEvent(input$recalculate, {
+    values$sigma = input$sigma
+    values$K = input$K
+    temp = calculate_history(values$data, values$K, values$sigma)         #recalculate the values$history
+    values$present_table = temp$present_table
+    values$history = temp$history
+    write.csv(values$history[,-ncol(values$history)], "elo_history.csv", row.names = FALSE)
+  })
+  
+  
   #choose the loser in the "Add Match Result" tab
   output$ui_loser_choice <- renderUI(
     radioButtons(inputId="loser_choice", label="Who lost?", 
@@ -52,8 +72,8 @@ server <- function(input, output) {
   observeEvent(input$add, {
     values$data = rbind(values$data, NA)                                  #create new row = new match
     values$data[nrow(values$data),input$player_choice] = as.numeric(input$player_choice == input$loser_choice)
-    write.csv(values$data, "durak.csv", row.names = FALSE, na='')  #overwrite existing file
-    temp = calculate_history(values$data)                          #recalculate the values$history
+    write.csv(values$data, "durak.csv", row.names = FALSE, na='')         #overwrite existing file
+    temp = calculate_history(values$data, values$K, values$sigma)         #recalculate the values$history
     values$present_table = temp$present_table
     values$history = temp$history
     write.csv(values$history[,-ncol(values$history)], "elo_history.csv", row.names = FALSE)
@@ -91,7 +111,7 @@ server <- function(input, output) {
   
   # losing_probabilities
   output$probs <- renderPlot({
-    ggplot(losing_probs_plot(input$player_choice), aes(x=player, y=probs)) +
+    ggplot(losing_probs_plot(input$player_choice, values$sigma), aes(x=player, y=probs)) +
       geom_bar(stat = "identity") +
       geom_text(aes(label=paste(round(100*probs,2), "%")),hjust=1.2) +
       coord_flip()

@@ -12,7 +12,7 @@ source("functions/elo.R")
 
 data = read.csv("durak.csv")
 
-temp = calculate_history(data)
+temp = calculate_history(data, K, sigma)
 present_table = temp$present_table
 history = temp$history
 
