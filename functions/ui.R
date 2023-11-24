@@ -7,7 +7,7 @@ page <-sidebarLayout(
             uiOutput("ui_player_choice"),
             sliderInput("K", "K", min = 1, max = 50, value = 32),
             sliderInput("sigma", "sigma:", min = 1, max = 1000, value = 200),
-            actionButton("recalculate","recalculate", icon = icon("square-check")),
+            actionButton("recalculate","recalculate", icon = icon("calculator")),
             actionButton("screenshot", "Take a Screenshot", icon = icon("camera")),
           ),
 
