@@ -17,7 +17,9 @@ This project is based on the Elo rating system as applied to chess. For further 
 ## Elo Calculation
 This is a brief summary of the formula we are using for the Elo computation.
 
-### Laters Results
+### Latest Results
+
+See also Francesco's computations: https://www.dropbox.com/scl/fi/iiooth5n2lsps2tyxkpm6/Glicko.pdf?rlkey=ordc8xipb3954523zipg677q7&dl=0 
 
 ![Results](results.png)
 
