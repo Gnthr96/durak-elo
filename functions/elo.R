@@ -4,8 +4,8 @@ library(mvtnorm)
 ###global parameters:
 ###
 initial_points = 1000         #initial points for every player
-sigma = 200                   #assigned standard deviation to the performance of each player
-K = 32                        #update weight --> how much is the last result worth?
+sigma = 300                   #assigned standard deviation to the performance of each player
+K = 10                        #update weight --> how much is the last result worth?
 
 
 get_losing_probs = function(players, score, sigma){
