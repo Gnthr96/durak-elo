@@ -73,7 +73,7 @@ server <- function(input, output) {
     values$data = rbind(values$data, NA)                                  #create new row = new match
     values$data[nrow(values$data),input$player_choice] = as.numeric(input$player_choice == input$loser_choice)
     write.csv(values$data, "durak.csv", row.names = FALSE, na='')         #overwrite existing file
-    temp = calculate_history(values$data, values$K, values$sigma)         #recalculate the values$history
+    temp = calculate_history(values$data, values$K, values$sigma, history = values$history, use_last_info = TRUE) #recalculate the values$history
     values$present_table = temp$present_table
     values$history = temp$history
     write.csv(values$history[,-ncol(values$history)], "elo_history.csv", row.names = FALSE)

@@ -41,13 +41,24 @@ get_streaks = function(data){
   return(pmax(res,0))
 }
 
-calculate_history = function(data, K, sigma){#data comes from csv-file containing one match per row, loser=1, winners = 0, rest = NA
+calculate_history = function(data, K, sigma, history = data.frame(NA), use_last_info = FALSE){#data comes from csv-file containing one match per row, loser=1, winners = 0, rest = NA
   ###
   ### calculates elo score based on recorded results in csv file
   ###
-  history = rbind(initial_points, data) #initial state + one match per row, every row contains elo-score after that match
+  history$match_id = NULL
+  if(!all(colnames(history) == colnames(data))){
+    use_last_info = FALSE
+  }
+  if(use_last_info){
+    n = nrow(history) #number of games that should be taken as given + 1
+    history = rbind(history, data[n:nrow(data),]) #initial state + one match per row, every row contains elo-score after that match
+    
+  } else{
+    history = rbind(initial_points, data) #initial state + one match per row, every row contains elo-score after that match
+    n = 1 #number of games that should be taken as given + 1
+  }
   
-  for(i in 1:nrow(data)){#loops through all matches that have been played
+  for(i in n:nrow(data)){#loops through all matches that have been played
     players = which(!is.na(data[i,]))                                     #players in i-th match
     match = as.matrix(data[i,players])                                    #result of i-th match
     losing_probs = get_losing_probs(players, as.matrix(history[i,]), sigma)      #probability to lose based on elo-score after ((i-1)-th match)
